@@ -15,3 +15,35 @@ def all_division(*arg1):
     for i in arg1[1:]:
         division /= i
     return division
+
+
+@pytest.mark.smoke
+def test_01():
+    with pytest.raises(KeyError):
+        all_division(1, 0)
+
+
+def test_02():
+    assert all_division(6, 5) == 1.2, "Неверный результат"
+
+
+def test_dec_03():
+    assert all_division(100, 5, 10) == 2, "Неверный результат"
+
+
+def test_04():
+    assert all_division(-1, -1) == 1, "Неверный результат"
+
+
+def test_dec_05():
+    assert all_division(1000000000, 200000000) == 5, "Неверный результат"
+
+
+# 1) запуск всех тестов
+# pytest -v 'lection 10\task_2.py'
+
+# 2) запуск смоков
+# pytest -m smoke -v 'lection 10\task_2.py'
+
+# 3) запуск по маске
+# pytest -k test_dec 'lection 10\task_2.py'
