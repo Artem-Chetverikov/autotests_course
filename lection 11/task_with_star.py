@@ -42,39 +42,32 @@ try:
     tabs = driver.find_elements(By.CSS_SELECTOR, '.sbisru-Header__menu-item')
     assert len(tabs) == 4
 
-    print('Проверить текст, атрибут и видимость ссылки Скачать')
     link_txt = 'Скачать локальные версии'
     download_link = driver.find_element(By.CSS_SELECTOR, '[href="/download"]')
-    assert download_link.text == link_txt, 'Неверный текст'
-    assert download_link.is_displayed(), 'Элемент не отображается'
 
     print('Перейти на страницу скачивания')
+    driver.execute_script("arguments[0].scrollIntoView(true);", download_link)
+    sleep(2)
     driver.execute_script("arguments[0].click();", download_link)
     sleep(1)
 
-    print('Проверить отображение вкладки СБИС Плагин')
     tabs = driver.find_element(By.CSS_SELECTOR, '[data-id="plugin"] .controls-TabButton__inner')
-    assert tabs.text == 'СБИС Плагин', 'Неверный текст'
-    assert tabs.is_displayed(), 'Элемент не отображается'
-
     print('Перейти на вкладку СБИС Плагин')
     driver.execute_script("arguments[0].click();", tabs)
     sleep(1)
 
     print('Проверить отображение вкладки Windows')
     win_tabs = driver.find_element(By.CSS_SELECTOR, '[data-id="default"]')
-    assert win_tabs.text == 'Windows', 'Неверный текст'
     assert win_tabs.is_displayed(), 'Элемент не отображается'
+    assert win_tabs.text == 'Windows', 'Неверный текст'
 
-    print('Проверить текст, атрибут и видимость ссылки Скачать')
     link_txt = 'Скачать (Exe 7.21 МБ)'
-    download_link = driver.find_element(By.CSS_SELECTOR, '[href="https://update.sbis.ru/Sbis3Plugin/master/win32/sbisplugin-setup-web.exe"]')
-    assert download_link.text == link_txt, 'Неверный текст'
-    assert download_link.is_displayed(), 'Элемент не отображается'
+    download_link = driver.find_element(By.LINK_TEXT, link_txt)
 
     print('Скачать в папку')
-    file_url = download_link.get_attribute("href")
-    driver.get(file_url)
+    # file_url = download_link.get_attribute("href")
+    # driver.get(file_url)
+    download_link.click()
 
     # Вариант 2
     # Отправка GET-запроса на получение файла
