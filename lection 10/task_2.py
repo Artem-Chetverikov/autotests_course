@@ -19,7 +19,7 @@ def all_division(*arg1):
 
 @pytest.mark.smoke
 def test_01():
-    with pytest.raises(KeyError):
+    with pytest.raises(ZeroDivisionError):
         all_division(1, 0)
 
 

@@ -18,7 +18,9 @@ def test_01():
         all_division(1, 0)
 
 
-@pytest.mark.parametrize('a, b, result', [(2, 2, 1), (6, 5, 1.2), (1, -1, -1)])
+@pytest.mark.parametrize('a, b, result', [pytest.param(2, 2, 1, marks=pytest.mark.smoke()),
+                                          (6, 5, 1.2),
+                                          pytest.param(1, -1, -1, marks=pytest.mark.skip('скипаем этот тест'))])
 def test_02(a, b, result):
     assert all_division(a, b) == result, "Неверный результат"
 
