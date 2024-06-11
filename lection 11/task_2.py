@@ -7,10 +7,11 @@
 
 from selenium import webdriver
 from time import sleep
-
+import pytest
 from selenium.webdriver import Keys, ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
+from selenium.common.exceptions import *
 
 # Настройка браузера
 options = Options()
@@ -43,11 +44,7 @@ try:
 
     print('Навести курсор на + и сделать клик')
     add_message = driver.find_element(By.CSS_SELECTOR, '.icon-RoundPlus')
-
-    action_chains = ActionChains(driver)
-    action_chains.move_to_element(add_message)
-    action_chains.click(add_message)
-    action_chains.perform()
+    add_message.click()
     sleep(3)
 
     print('Ищем по ФИО')
@@ -56,20 +53,10 @@ try:
 
     search.send_keys(fio)
     sleep(1)
-
-    send_all = driver.find_elements(By.CSS_SELECTOR, '[data-qa="item"] .ws-flex-column')
-
-    send_self = None
-    for item in send_all:
-        if "Четвериков Артем" in item.text:
-            send_self = item
-
-    assert send_self.is_displayed(), 'ФИО не отображается'
+    send_self = driver.find_element(By.XPATH, "//span[contains(text(),'Четвериков Артем')]")
 
     print('Кликаем по нужному ФИО')
-    action_chains.move_to_element(send_self)
-    action_chains.click(send_self)
-    action_chains.perform()
+    send_self.click()
     sleep(3)
 
     print('Отправляем текст')
@@ -80,26 +67,18 @@ try:
 
     print('Навести курсор на Отправить и сделать клик')
     button_send = driver.find_element(By.CSS_SELECTOR, '[title="Отправить"] span')
-    action_chains.move_to_element(button_send)
-    action_chains.click(button_send)
-    action_chains.perform()
+    button_send.click()
     sleep(2)
 
     print('Навести курсор на Закрыть и сделать клик')
     button_close = driver.find_element(By.CSS_SELECTOR, '.icon-Close')
-    action_chains.move_to_element(button_close)
-    action_chains.click(button_close)
-    action_chains.perform()
+    button_close.click()
     sleep(2)
 
-    all_dialogs = driver.find_elements(By.CSS_SELECTOR, '.controls-ListView__itemContent_withCheckboxes_default')
-
-    dialog_self = None
-    for item in all_dialogs:
-        if "Четвериков Артем" in item.text:
-            dialog_self = item
+    dialog_self = driver.find_element(By.XPATH, "//p[contains(text(),'Текст себе')]")
 
     print('Навести курсор на диалог и кликнуть ПКМ')
+    action_chains = ActionChains(driver)
     action_chains.move_to_element(dialog_self)
     action_chains.context_click(dialog_self)
     action_chains.perform()
@@ -107,9 +86,7 @@ try:
 
     print('Кликнуть по Удалить')
     menu_delete = driver.find_element(By.CSS_SELECTOR, '[data-target="menu_item_deleteToArchive"]')
-    action_chains.move_to_element(menu_delete)
-    action_chains.click(menu_delete)
-    action_chains.perform()
+    menu_delete.click()
     sleep(3)
 
     # проверим, отображается ли текст сообщения
@@ -118,10 +95,15 @@ try:
     # assert not (send_text in get_source), "Сообщение не удалено"
 
     # ВАРИАНТ 2
-    all_dialogs = driver.find_elements(By.CSS_SELECTOR, '.controls-ListView__itemContent_withCheckboxes_default')
-    dialog_self = None
-    for item in all_dialogs:
-        assert not("Четвериков Артем" in item.text)
+    # all_dialogs = driver.find_elements(By.CSS_SELECTOR, '.controls-ListView__itemContent_withCheckboxes_default')
+    # dialog_self = None
+    # for item in all_dialogs:
+    #     assert not("Четвериков Артем" in item.text)
+
+    # ВАРИАНТ 3
+
+    with pytest.raises(StaleElementReferenceException):
+        dialog_self.is_displayed()
 
 finally:
     driver.quit()

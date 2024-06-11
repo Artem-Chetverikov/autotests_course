@@ -65,11 +65,7 @@ try:
     # ВАРИАНТ 2
     driver.execute_script("arguments[0].scrollIntoView(true);", link_about)
     sleep(2)
-
-    action_chains = ActionChains(driver)
-    action_chains.move_to_element(link_about)
-    action_chains.click(link_about)
-    action_chains.perform()
+    link_about.click()
 
     sleep(5)
     print('Проверить адрес сайта и заголовок страницы "О компании"')
